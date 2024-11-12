@@ -7,41 +7,43 @@ export async function handleJsonDisplay(data) {
     });
 }
 
-export function getJsonData() {
-    return {
-        "greetings": {
-            "Hello World!": [
-                { "country": 1, "name": "USA" },
-                { "country": 2, "name": "Philippines" },
-                { "country": 3, "name": "UK" }
-            ],
-            "¡Hola Mundo!": [
-                { "country": 1, "name": "Spain" },
-                { "country": 2, "name": "Mexico" },
-                { "country": 3, "name": "Argentina" }
-            ],
-            "Bonjour le Monde!": [
-                { "country": 1, "name": "France" },
-                { "country": 2, "name": "Canada" },
-                { "country": 3, "name": "Belgium" }
-            ],
-            "Hallo Welt!": [
-                { "country": 1, "name": "Germany" },
-                { "country": 2, "name": "Austria" },
-                { "country": 3, "name": "Switzerland" }
-            ],
-            "你好，世界！": [
-                { "country": 1, "name": "China" },
-                { "country": 2, "name": "Taiwan" },
-                { "country": 3, "name": "Singapore" }
-            ],
-            "こんにちは世界！": [
-                { "country": 1, "name": "Japan" }
-            ]
-        },
-        "metadata": {
-            "version": "1.0",
-            "lastUpdated": new Date().toISOString()
-        }
-    };
+export async function getJsonData(env) {
+    try {
+        // Fetch all greetings and their associated countries
+        const results = await env.DB.prepare(`
+            SELECT 
+                g.greeting_text,
+                g.id as greeting_id,
+                c.country_name,
+                c.country_order
+            FROM greetings g
+            LEFT JOIN countries c ON g.id = c.greeting_id
+            ORDER BY g.id, c.country_order
+        `).all();
+
+        // Transform the flat results into nested structure
+        const greetings = {};
+        results.results.forEach(row => {
+            if (!greetings[row.greeting_text]) {
+                greetings[row.greeting_text] = [];
+            }
+            if (row.country_name) {
+                greetings[row.greeting_text].push({
+                    country: row.country_order,
+                    name: row.country_name
+                });
+            }
+        });
+
+        return {
+            greetings,
+            metadata: {
+                version: "1.0",
+                lastUpdated: new Date().toISOString()
+            }
+        };
+    } catch (error) {
+        console.error('Database error:', error);
+        throw error;
+    }
 } 

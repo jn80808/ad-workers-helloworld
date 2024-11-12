@@ -7,7 +7,7 @@ export default {
 
         // Add new API endpoint for JSON data
         if (path === '/api/data') {
-            const jsonData = getJsonData();
+            const jsonData = await getJsonData(env);
             return handleJsonDisplay(jsonData);
         }
 

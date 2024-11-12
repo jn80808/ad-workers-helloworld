@@ -4,6 +4,15 @@ main = "src/index.js"
 compatibility_date = "2024-11-06"
 compatibility_flags = ["nodejs_compat"]
 
+[triggers]
+crons = []
+
+[[d1_databases]]
+binding = "DB"
+database_name = "hello-world-db"
+database_id = "210e5966-461b-42cd-8292-519a871d63f3"
+
+
 # Workers Logs
 # Docs: https://developers.cloudflare.com/workers/observability/logs/workers-logs/
 # Configuration: https://developers.cloudflare.com/workers/observability/logs/workers-logs/#enable-workers-logs
