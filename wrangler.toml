@@ -13,6 +13,10 @@ database_name = "hello-world-db"
 database_id = "210e5966-461b-42cd-8292-519a871d63f3"
 
 
+[vars]
+ALLOWED_ORIGIN = "http://localhost:5173"  # Default Vite dev server port
+
+
 # Workers Logs
 # Docs: https://developers.cloudflare.com/workers/observability/logs/workers-logs/
 # Configuration: https://developers.cloudflare.com/workers/observability/logs/workers-logs/#enable-workers-logs
